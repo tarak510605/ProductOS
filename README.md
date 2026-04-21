@@ -1,4 +1,6 @@
-# Scalable REST API + React UI
+# ProductOS - Scalable REST API + React UI
+
+Product name: ProductOS
 
 Complete full-stack project with:
 - Node.js + Express backend
