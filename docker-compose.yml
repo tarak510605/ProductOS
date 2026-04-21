@@ -1,0 +1,46 @@
+services:
+  mongo:
+    image: mongo:7
+    container_name: scalable-mongo
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+
+  redis:
+    image: redis:7-alpine
+    container_name: scalable-redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+
+  backend:
+    build:
+      context: ./backend
+    container_name: scalable-backend
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    ports:
+      - '5001:5001'
+    depends_on:
+      - mongo
+      - redis
+    environment:
+      REDIS_URL: redis://redis:6379
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: scalable-frontend
+    restart: unless-stopped
+    environment:
+      VITE_API_BASE_URL: http://localhost:5001/api/v1
+    ports:
+      - '5173:5173'
+    depends_on:
+      - backend
+
+volumes:
+  mongo_data:
